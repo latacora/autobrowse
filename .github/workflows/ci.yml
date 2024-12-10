@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Clojure
-        uses: DeLaGuardo/setup-clojure@v1
+        uses: DeLaGuardo/setup-clojure@13
         with:
           tools-deps: "1.10.3.1040"
 
