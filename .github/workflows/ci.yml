@@ -18,8 +18,6 @@ jobs:
 
       - name: Set up Clojure
         uses: DeLaGuardo/setup-clojure@13.0
-        with:
-          tools-deps: "1.10.3.1040"
 
       - name: Run tests
         run: clojure -T:build ci
