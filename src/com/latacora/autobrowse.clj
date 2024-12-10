@@ -18,7 +18,7 @@
      " | Select-Object -Property LocalAddress, LocalPort"))
    ;; Alternatively we could | ConvertTo-JSON here
    (stdout-lines)
-   (drop 2) ;; Skip property names, horizontal line
+   (drop 3) ;; Skip property names, spacer, horizontal line
    (map (fn [line] (str/split line #"\s+" 2)))))
 
 (defn ^:private get-lsof-listening-sockets!
