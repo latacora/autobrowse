@@ -21,6 +21,8 @@ jobs:
 
       - name: Set up Clojure
         uses: DeLaGuardo/setup-clojure@13.0
+        with:
+          cli: latest
 
       - name: Run tests
         run: clojure -T:build ci
