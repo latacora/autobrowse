@@ -28,7 +28,7 @@ Here's a simplified example of how you might use this in a `bb.edn`:
   {:doc "Run a development hugo server"
    :task
    (let [p (p/process {:inherit true} "hugo" "server" "yada" "yada")]
-     (-> p :proc .pid str browse-once-listening! future)
+     (-> p :proc .pid browse-once-listening! future)
      (p/check p))}}}
 ```
 
