@@ -38,6 +38,14 @@ We create the process serving the web page (here `hugo server`) with
 blocks until it succeeds, hence why it is ran in a separate thread (with
 `future`).
 
+### Including descendent processes
+
+The `get-listening-urls!` function has an option to include URLs from descendent processes. By default, this option is enabled. You can disable it by setting `:include-descendents?` to `false`. This is helpful if the webservice is actually a subprocess of something else, e.g. you're running it with `uv run`.
+
+```clojure
+(get-listening-urls! pid {:include-descendents? false})
+```
+
 ## Development
 
 Run the project's CI pipeline and build a JAR:
