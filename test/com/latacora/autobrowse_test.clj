@@ -56,13 +56,40 @@
     ;; We assume 1 == init and it's probably not listening on any TCP ports
     (t/is (empty? (autobrowse/get-listening-urls! 1 {:include-descendents? false})))))
 
+(defn wait-for-listener!
+  [pid timeout-ms]
+  (let [interval-ms 100
+        end-time (+ (System/currentTimeMillis) timeout-ms)]
+    (loop []
+      (cond
+        (>= (System/currentTimeMillis) end-time)
+        (throw (ex-info "Timed out waiting for listener" {}))
+
+        (empty? (autobrowse/get-listening-urls! pid))
+        (do
+          (Thread/sleep interval-ms)
+          (recur))
+
+        :else true))))
+
+(defn run-nc-inside-shell!
+  []
+  ;; The echo 1 here is load bearing. Some shells, when they see they only have one command to run,
+  ;; will try to be very clever and `exec` into the process instead of being a shell. This is a
+  ;; problem because we need the shell as a process that doesn't listen on anything. We add ; echo 1
+  ;; to force it to be a shell.
+
+  ;;  You can check this with:
+  ;; (def p (p/process ["sh" "-c" "nc -vl 0; echo 1"]))
+  ;; (-> p :proc .info .command .get)
+  (p/process {:inherit true} "/bin/sh" "-c" "nc -vl 0; echo 1"))
+
 (t/deftest test-descendent-listening-urls
   (t/testing "get-listening-urls! returns URLs for a child process listening on a TCP port"
-    (let [script "(do (require '[babashka.process :as p]) (p/sh \"clojure\" \"-M:test\" \"-m\" \"com.latacora.start-test-server\"))"
-          subprocess (p/process ["clojure" "-M" "-e" script] {:inherit true})
+    (let [subprocess (run-nc-inside-shell!)
           pid (-> subprocess :proc .pid)]
       (try
-        (Thread/sleep 3000) ;; Give subprocesses time to start
+        (wait-for-listener! pid 10000) ;; Retry for up to 10 seconds
         (t/is
          (empty?
           (autobrowse/get-listening-urls!
