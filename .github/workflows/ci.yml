@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Clojure
-        uses: DeLaGuardo/setup-clojure@13.0
+        uses: DeLaGuardo/setup-clojure@94d767dbb80ae5c637d0f1ad70b75fa2b00495cd # 13.0
         with:
           cli: latest
 
